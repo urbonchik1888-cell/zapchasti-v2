@@ -15,20 +15,6 @@
     }
   ],
   "usedParts": [],
-  "appliances": [
-    {
-      "id": 3,
-      "name": "Станок токарный 16К20",
-      "category": "equipment",
-      "price": 250000,
-      "quantity": 1,
-      "phone": "+375 (44) 456-78-90",
-      "description": "Б/у токарный станок в рабочем состоянии.",
-      "images": [],
-      "userId": 1,
-      "userName": "Администратор",
-      "date": "2025-11-22T21:07:49.470Z"
-    }
-  ],
+  "appliances": [],
   "users": []
 }
