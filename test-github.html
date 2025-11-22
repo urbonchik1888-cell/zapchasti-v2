@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест GitHub API</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        .result { margin: 10px 0; padding: 10px; background: #f5f5f5; border-radius: 3px; }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e8; color: #2e7d32; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Тест GitHub API</h1>
+    
+    <div class="test-section">
+        <h3>1. Проверка токена</h3>
+        <input type="text" id="tokenInput" placeholder="Введите GitHub токен" style="width: 300px; padding: 5px;">
+        <button onclick="testToken()">Проверить токен</button>
+        <div id="tokenResult" class="result"></div>
+        <p><small>Если токен не работает, <a href="https://github.com/settings/tokens/new" target="_blank">создайте новый токен</a> с правом <strong>repo</strong></small></p>
+    </div>
+    
+    <div class="test-section">
+        <h3>2. Чтение данных</h3>
+        <button onclick="testRead()">Прочитать data.json</button>
+        <div id="readResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>3. Запись данных</h3>
+        <button onclick="testWrite()">Записать тестовые данные</button>
+        <div id="writeResult" class="result"></div>
+    </div>
+
+    <script>
+        async function testToken() {
+            const token = document.getElementById('tokenInput').value.trim();
+            const resultDiv = document.getElementById('tokenResult');
+            
+            if (!token) {
+                resultDiv.innerHTML = '<div class="error">Введите токен</div>';
+                return;
+            }
+            
+            try {
+                // Проверяем базовые права
+                const userResponse = await fetch('https://api.github.com/user', {
+                    headers: {
+                        'Authorization': 'token ' + token,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                if (!userResponse.ok) {
+                    const error = await userResponse.text();
+                    resultDiv.innerHTML = `<div class="error">❌ Токен недействителен: ${error}</div>`;
+                    return;
+                }
+                
+                const user = await userResponse.json();
+                
+                // Проверяем права на репозиторий
+                const repoResponse = await fetch('https://api.github.com/repos/urbonchik1888-cell/zapchasti-v2', {
+                    headers: {
+                        'Authorization': 'token ' + token,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                let repoInfo = '';
+                if (repoResponse.ok) {
+                    const repo = await repoResponse.json();
+                    repoInfo = `<br>✅ Репозиторий доступен: ${repo.full_name}`;
+                    
+                    // Проверяем наличие файла data.json
+                    const fileResponse = await fetch('https://api.github.com/repos/urbonchik1888-cell/zapchasti-v2/contents/data.json', {
+                        headers: {
+                            'Authorization': 'token ' + token,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+                    
+                    if (fileResponse.ok) {
+                        const file = await fileResponse.json();
+                        repoInfo += `<br>📁 Файл data.json: существует (${file.size} байт)`;
+                    } else {
+                        repoInfo += `<br>❌ Файл data.json: не найден`;
+                    }
+                } else {
+                    repoInfo = `<br>❌ Репозиторий недоступен: ${await repoResponse.text()}`;
+                }
+                
+                // Проверяем права на запись
+                const writeTest = await fetch('https://api.github.com/repos/urbonchik1888-cell/zapchasti/contents/data.json', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'token ' + token,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                let writeInfo = '';
+                if (writeTest.ok) {
+                    writeInfo = '<br>✅ Права на чтение есть';
+                } else {
+                    writeInfo = '<br>❌ Нет прав на чтение файла';
+                }
+                
+                resultDiv.innerHTML = `
+                    <div class="success">✅ Токен действителен. Пользователь: ${user.login}</div>
+                    <div class="result">${repoInfo}${writeInfo}</div>
+                `;
+                
+                localStorage.setItem('githubToken', token);
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Ошибка: ${error.message}</div>`;
+            }
+        }
+        
+        async function testRead() {
+            const token = localStorage.getItem('githubToken');
+            const resultDiv = document.getElementById('readResult');
+            
+            if (!token) {
+                resultDiv.innerHTML = '<div class="error">Сначала проверьте токен</div>';
+                return;
+            }
+            
+            try {
+                const response = await fetch('https://api.github.com/repos/urbonchik1888-cell/zapchasti-v2/contents/data.json', {
+                    headers: {
+                        'Authorization': 'token ' + token,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `<div class="success">✅ Файл найден. SHA: ${data.sha.substring(0, 7)}...</div>`;
+                } else {
+                    const error = await response.text();
+                    resultDiv.innerHTML = `<div class="error">❌ Ошибка чтения: ${error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Ошибка: ${error.message}</div>`;
+            }
+        }
+        
+        async function testWrite() {
+            const token = localStorage.getItem('githubToken');
+            const resultDiv = document.getElementById('writeResult');
+            
+            if (!token) {
+                resultDiv.innerHTML = '<div class="error">Сначала проверьте токен</div>';
+                return;
+            }
+            
+            try {
+                resultDiv.innerHTML = '<div class="result">⏳ Проверка прав на запись...</div>';
+                
+                // Сначала получаем текущий файл
+                const getResponse = await fetch('https://api.github.com/repos/urbonchik1888-cell/zapchasti-v2/contents/data.json', {
+                    headers: {
+                        'Authorization': 'token ' + token,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                let sha = null;
+                let currentData = { newParts: [], usedParts: [], appliances: [], users: [] };
+                
+                if (getResponse.ok) {
+                    const fileData = await getResponse.json();
+                    sha = fileData.sha;
+                    resultDiv.innerHTML = '<div class="result">⏳ Загрузка текущих данных...</div>';
+                    
+                    // Загружаем текущие данные
+                    try {
+                        const rawResponse = await fetch('https://raw.githubusercontent.com/urbonchik1888-cell/zapchasti-v2/main/data.json?t=' + Date.now());
+                        if (rawResponse.ok) {
+                            currentData = await rawResponse.json();
+                            resultDiv.innerHTML = '<div class="result">⏳ Подготовка к записи...</div>';
+                        }
+                    } catch (e) {
+                        console.log('Using default data');
+                    }
+                } else {
+                    const error = await getResponse.text();
+                    resultDiv.innerHTML = `<div class="error">❌ Нет доступа к файлу: ${error}</div>`;
+                    return;
+                }
+                
+                // Добавляем тестовую запись с текущим временем
+                const testEntry = {
+                    timestamp: new Date().toISOString(),
+                    device: navigator.userAgent.includes('iPhone') ? 'iPhone' : 'MacBook',
+                    message: 'Test entry from GitHub API test page',
+                    testId: Math.random().toString(36).substring(7)
+                };
+                
+                if (!currentData.testEntries) {
+                    currentData.testEntries = [];
+                }
+                currentData.testEntries.push(testEntry);
+                
+                const content = btoa(unescape(encodeURIComponent(JSON.stringify(currentData, null, 2))));
+                const body = {
+                    message: `Test update from ${testEntry.device} at ${testEntry.timestamp}`,
+                    content,
+                    ...(sha && { sha })
+                };
+                
+                resultDiv.innerHTML = '<div class="result">⏳ Отправка на GitHub...</div>';
+                
+                const putResponse = await fetch('https://api.github.com/repos/urbonchik1888-cell/zapchasti-v2/contents/data.json', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'token ' + token,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
+                
+                if (putResponse.ok) {
+                    const result = await putResponse.json();
+                    resultDiv.innerHTML = `
+                        <div class="success">✅ Данные сохранены!</div>
+                        <div class="result">
+                            Commit: ${result.commit.sha.substring(0, 7)}...<br>
+                            Устройство: ${testEntry.device}<br>
+                            Время: ${testEntry.timestamp}<br>
+                            <a href="https://github.com/urbonchik1888-cell/zapchasti-v2/commit/${result.commit.sha}" target="_blank">Посмотреть на GitHub</a>
+                        </div>
+                    `;
+                } else {
+                    const error = await putResponse.text();
+                    resultDiv.innerHTML = `<div class="error">❌ Ошибка записи: ${error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Ошибка: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
