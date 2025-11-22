@@ -1,14 +1,34 @@
 {
-  "newParts": [],
-  "usedParts": [],
-  "appliances": [],
-  "users": [],
-  "testEntries": [
+  "newParts": [
     {
-      "timestamp": "2025-11-22T21:11:48.245Z",
-      "device": "MacBook",
-      "message": "Test entry from GitHub API test page",
-      "testId": "gd61oj"
+      "id": 1,
+      "name": "Свечи зажигания NGK BKR6E",
+      "category": "new",
+      "price": 25,
+      "quantity": 50,
+      "phone": "+375 (29) 123-45-67",
+      "description": "Комплект 4 шт. Оригинальные свечи зажигания",
+      "images": [],
+      "userId": 1,
+      "userName": "Администратор",
+      "date": "2025-11-22T21:07:49.470Z"
     }
-  ]
+  ],
+  "usedParts": [],
+  "appliances": [
+    {
+      "id": 3,
+      "name": "Станок токарный 16К20",
+      "category": "equipment",
+      "price": 250000,
+      "quantity": 1,
+      "phone": "+375 (44) 456-78-90",
+      "description": "Б/у токарный станок в рабочем состоянии.",
+      "images": [],
+      "userId": 1,
+      "userName": "Администратор",
+      "date": "2025-11-22T21:07:49.470Z"
+    }
+  ],
+  "users": []
 }
