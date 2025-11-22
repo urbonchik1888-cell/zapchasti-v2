@@ -1,19 +1,5 @@
 {
-  "newParts": [
-    {
-      "id": 1,
-      "name": "Свечи зажигания NGK BKR6E",
-      "category": "new",
-      "price": 25,
-      "quantity": 50,
-      "phone": "+375 (29) 123-45-67",
-      "description": "Комплект 4 шт. Оригинальные свечи зажигания",
-      "images": [],
-      "userId": 1,
-      "userName": "Администратор",
-      "date": "2025-11-22T21:07:49.470Z"
-    }
-  ],
+  "newParts": [],
   "usedParts": [],
   "appliances": [],
   "users": []
