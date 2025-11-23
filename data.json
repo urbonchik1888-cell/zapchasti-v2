@@ -39,5 +39,13 @@
   ],
   "usedParts": [],
   "appliances": [],
-  "users": []
+  "users": [],
+  "testEntries": [
+    {
+      "timestamp": "2025-11-23T07:58:05.954Z",
+      "device": "MacBook",
+      "message": "Test entry from GitHub API test page",
+      "testId": "x5432c"
+    }
+  ]
 }
