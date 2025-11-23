@@ -815,6 +815,18 @@ class PartsCatalog {
             quantityGroup.style.display = 'none';
         }
         
+        // Изменяем заголовок в зависимости от режима
+        const modalTitle = document.querySelector('#addPartModal h2');
+        const submitBtn = document.querySelector('#addPartForm button[type="submit"]');
+        
+        if (this.editingPartId) {
+            modalTitle.textContent = 'Редактировать объявление';
+            submitBtn.textContent = 'Сохранить изменения';
+        } else {
+            modalTitle.textContent = 'Добавить запчасть';
+            submitBtn.textContent = 'Добавить запчасть';
+        }
+        
         document.getElementById('addPartModal').style.display = 'block';
         document.body.style.overflow = 'hidden';
     }
@@ -825,6 +837,12 @@ class PartsCatalog {
         document.getElementById('addPartForm').reset();
         document.getElementById('imagePreview').innerHTML = '';
         this.editingPartId = null;
+        
+        // Сбрасываем заголовок и кнопку на значения по умолчанию
+        const modalTitle = document.querySelector('#addPartModal h2');
+        const submitBtn = document.querySelector('#addPartForm button[type="submit"]');
+        modalTitle.textContent = 'Добавить запчасть';
+        submitBtn.textContent = 'Добавить запчасть';
     }
 
     async handleSubmit(e) {
