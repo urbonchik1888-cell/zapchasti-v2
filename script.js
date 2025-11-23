@@ -876,8 +876,10 @@ class PartsCatalog {
         const images = [];
         for (let file of files) {
             if (file.type.startsWith('image/')) {
-                const base64 = await this.fileToBase64(file);
-                images.push(base64);
+                console.log(`⚡ Оптимизация изображения: ${file.name}, размер: ${(file.size / 1024).toFixed(2)}KB`);
+                const optimizedBase64 = await this.optimizeImage(file);
+                images.push(optimizedBase64);
+                console.log(`✅ Изображение оптимизировано, новый размер: ${(optimizedBase64.length * 0.75 / 1024).toFixed(2)}KB`);
             }
         }
         return images;
@@ -1054,6 +1056,41 @@ class PartsCatalog {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    }
+
+    // Оптимизация изображений перед сохранением
+    async optimizeImage(file, maxWidth = 800, maxHeight = 800, quality = 0.7) {
+        return new Promise((resolve) => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            
+            img.onload = () => {
+                // Вычисление новых размеров с сохранением пропорций
+                let { width, height } = img;
+                
+                if (width > maxWidth || height > maxHeight) {
+                    const ratio = Math.min(maxWidth / width, maxHeight / height);
+                    width *= ratio;
+                    height *= ratio;
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                
+                // Масштабирование и сжатие
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                // Конвертация в base64 с сжатием
+                canvas.toBlob((blob) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.readAsDataURL(blob);
+                }, 'image/jpeg', quality);
+            };
+            
+            img.src = URL.createObjectURL(file);
+        });
     }
 
     previewImages(e) {
