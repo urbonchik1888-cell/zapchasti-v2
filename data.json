@@ -1,12 +1,12 @@
 {
   "newParts": [
     {
-      "id": 1763887246565,
+      "id": 1763887387902,
       "name": "термостат К-59",
       "category": "new",
       "appliance": "refrigerator",
       "price": 30,
-      "quantity": 15,
+      "quantity": 1,
       "phone": "+375456456456",
       "email": "",
       "telegram": "",
@@ -16,7 +16,7 @@
       ],
       "userId": 1,
       "userName": "Администратор",
-      "date": "2025-11-23T08:40:46.566Z"
+      "date": "2025-11-23T08:43:07.903Z"
     },
     {
       "id": 1763886516098,
