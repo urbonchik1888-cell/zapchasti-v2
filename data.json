@@ -33,7 +33,24 @@
       "date": "2025-11-23T21:57:32.402Z"
     }
   ],
-  "usedParts": [],
+  "usedParts": [
+    {
+      "id": 1763937419095,
+      "name": "Насос бош",
+      "category": "used",
+      "appliance": "dishwasher",
+      "price": 200,
+      "quantity": 1,
+      "phone": "",
+      "email": "",
+      "telegram": "@yuri_Podlipski",
+      "description": "",
+      "images": [],
+      "userId": 1763891044381,
+      "userName": "Yuri ",
+      "date": "2025-11-23T22:36:59.095Z"
+    }
+  ],
   "appliances": [],
   "users": []
 }
