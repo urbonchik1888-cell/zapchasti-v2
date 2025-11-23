@@ -46,13 +46,11 @@ class PartsCatalog {
 
         // Поиск
         const searchInput = document.getElementById('searchInput');
-        const searchBtn = document.getElementById('searchBtn');
         
         searchInput.addEventListener('input', (e) => this.handleSearch(e));
         searchInput.addEventListener('keyup', (e) => {
             if (e.key === 'Enter') this.handleSearch(e);
         });
-        searchBtn.addEventListener('click', () => this.handleSearch());
 
         // Предпросмотр изображений
         document.getElementById('partImages').addEventListener('change', (e) => this.previewImages(e));
@@ -1219,7 +1217,7 @@ class PartsCatalog {
             
             console.log('Fetching current file from GitHub...');
             
-            // Получаем текущий файл и sha
+            // ВСЕГДА получаем свежий SHA перед сохранением
             const getRes = await fetch(GH_CONTENTS_URL, { 
                 headers: { 
                     'Authorization': 'token ' + token, 
@@ -1235,7 +1233,7 @@ class PartsCatalog {
             if (getRes.ok) {
                 const fileData = await getRes.json();
                 sha = fileData.sha;
-                console.log('Got file SHA:', sha);
+                console.log('Got current file SHA:', sha);
                 
                 // Загружаем текущее содержимое
                 try {
@@ -1249,6 +1247,7 @@ class PartsCatalog {
                 }
             } else {
                 console.log('Failed to get file info:', await getRes.text());
+                return;
             }
             
             // Обновляем данные запчастями
@@ -1277,10 +1276,10 @@ class PartsCatalog {
             const body = { 
                 message: 'Update parts catalog - ' + new Date().toISOString(), 
                 content, 
-                ...(sha && { sha }) 
+                sha: sha // ВСЕГДА используем свежий SHA
             };
             
-            console.log('Sending PUT request to GitHub...');
+            console.log('Sending PUT request to GitHub with SHA:', sha);
             
             const putRes = await fetch(GH_CONTENTS_URL, { 
                 method: 'PUT', 
@@ -1301,6 +1300,14 @@ class PartsCatalog {
             } else {
                 const errorText = await putRes.text();
                 console.error('Failed to save parts to GitHub:', errorText);
+                
+                // Если ошибка SHA, пробуем еще раз с новым SHA
+                if (putRes.status === 409) {
+                    console.log('SHA conflict, retrying...');
+                    await new Promise(resolve => setTimeout(resolve, 1000)); // ждем 1 секунду
+                    return this.savePartsToGitHub(); // рекурсивный вызов
+                }
+                
                 alert('Ошибка сохранения на GitHub: ' + errorText);
             }
         } catch (error) {
