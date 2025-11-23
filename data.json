@@ -1,7 +1,7 @@
 {
   "newParts": [
     {
-      "id": 1763887180891,
+      "id": 1763887246565,
       "name": "термостат К-59",
       "category": "new",
       "appliance": "refrigerator",
@@ -16,7 +16,7 @@
       ],
       "userId": 1,
       "userName": "Администратор",
-      "date": "2025-11-23T08:39:40.891Z"
+      "date": "2025-11-23T08:40:46.566Z"
     },
     {
       "id": 1763886516098,
@@ -53,22 +53,6 @@
       "userId": 1,
       "userName": "Администратор",
       "date": "2025-11-23T06:21:42.609Z"
-    },
-    {
-      "id": 1763846733468,
-      "name": "компрессор jiaxipera T1114Y",
-      "category": "new",
-      "appliance": "refrigerator",
-      "price": 120,
-      "quantity": 1,
-      "phone": "+375456456456",
-      "email": "",
-      "telegram": "",
-      "description": "",
-      "images": [],
-      "userId": 1,
-      "userName": "Администратор",
-      "date": "2025-11-23T08:00:23.538Z"
     }
   ],
   "usedParts": [],
