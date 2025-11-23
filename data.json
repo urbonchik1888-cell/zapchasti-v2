@@ -23,8 +23,8 @@
       "name": "компрессор jiaxipera T1114Y",
       "category": "new",
       "appliance": "refrigerator",
-      "price": 123,
-      "quantity": 45,
+      "price": 120,
+      "quantity": 1,
       "phone": "+375456456456",
       "email": "",
       "telegram": "",
@@ -32,7 +32,7 @@
       "images": [],
       "userId": 1,
       "userName": "Администратор",
-      "date": "2025-11-23T07:59:41.323Z"
+      "date": "2025-11-23T08:00:23.538Z"
     }
   ],
   "usedParts": [],
