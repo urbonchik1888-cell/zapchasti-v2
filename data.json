@@ -35,6 +35,22 @@
   ],
   "usedParts": [
     {
+      "id": 1763969332300,
+      "name": "Насос циркуляционный ",
+      "category": "used",
+      "appliance": "dishwasher",
+      "price": 350,
+      "quantity": 1,
+      "phone": "+375291266266",
+      "email": "",
+      "telegram": "",
+      "description": "Посудомоечная машина Бош",
+      "images": [],
+      "userId": 1763969156803,
+      "userName": "Виктор Данилов",
+      "date": "2025-11-24T07:28:52.300Z"
+    },
+    {
       "id": 1763937419095,
       "name": "Насос бош",
       "category": "used",
